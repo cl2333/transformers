@@ -17,6 +17,7 @@
 
 import logging
 import os
+import json
 
 from ...file_utils import is_tf_available
 from .utils import DataProcessor, InputExample, InputFeatures
@@ -531,11 +532,11 @@ class BoolQProcessor(DataProcessor):
 
     def get_train_examples(self, data_dir):
         """See base class."""
-        return self._create_examples(self.json.load(os.path.join(data_dir, "train.jsonl")), "train")
+        return self._create_examples(json.load(os.path.join(data_dir, "train.jsonl")), "train")
 
     def get_dev_examples(self, data_dir):
         """See base class."""
-        return self._create_examples(self.json.load(os.path.join(data_dir, "dev.jsonl")), "dev")
+        return self._create_examples(json.load(os.path.join(data_dir, "dev.jsonl")), "dev")
 
     def get_labels(self):
         """See base class."""
@@ -565,7 +566,7 @@ glue_tasks_num_labels = {
     "qnli": 2,
     "rte": 2,
     "wnli": 2,
-    "BoolQ": 2  
+    "boolq": 2  
 }
 
 glue_processors = {
@@ -579,7 +580,7 @@ glue_processors = {
     "qnli": QnliProcessor,
     "rte": RteProcessor,
     "wnli": WnliProcessor,
-    "BoolQ": BoolQProcessor,
+    "boolq": BoolQProcessor,
 }
 
 glue_output_modes = {
@@ -593,5 +594,5 @@ glue_output_modes = {
     "qnli": "classification",
     "rte": "classification",
     "wnli": "classification",
-    "BoolQ": "classification",
+    "boolq": "classification",
 }
