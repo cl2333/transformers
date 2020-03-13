@@ -557,7 +557,7 @@ class BoolQProcessor(DataProcessor):
             text_b = line['passage']
             #text_c = line['title']
             label = line['answer']
-            examples.append(InputExample(guid=guid, text_a=text_a, text_b=text_b, text_c=text_c, label=label))
+            examples.append(InputExample(guid=guid, text_a=text_a, text_b=text_b, label=label))
         return examples
 
 glue_tasks_num_labels = {
