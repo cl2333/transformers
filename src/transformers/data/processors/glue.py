@@ -515,6 +515,44 @@ class WnliProcessor(DataProcessor):
             examples.append(InputExample(guid=guid, text_a=text_a, text_b=text_b, label=label))
         return examples
 
+    
+class BoolQProcessor(DataProcessor):
+    """Processor for the BoolQ data set (GLUE version)."""
+
+    def get_example_from_tensor_dict(self, tensor_dict):
+        """See base class."""
+        return InputExample(
+            tensor_dict["question"].numpy().decode("utf-8"),
+            tensor_dict["passage"].numpy().decode("utf-8"),
+            tensor_dict["title"].numpy().decode("utf-8"),
+            tensor_dict["answer"].numpy().decode("utf-8"),
+        )
+
+    def get_train_examples(self, data_dir):
+        """See base class."""
+        return self._create_examples(self.json.load(os.path.join(data_dir, "train.jsonl")), "train")
+
+    def get_dev_examples(self, data_dir):
+        """See base class."""
+        return self._create_examples(self.json.load(os.path.join(data_dir, "dev.jsonl")), "dev")
+
+    def get_labels(self):
+        """See base class."""
+        return ["true", "false"]
+
+    def _create_examples(self, lines, set_type):
+        """Creates examples for the training and dev sets."""
+        examples = []
+        for (i, line) in enumerate(lines):
+            if i == 0:
+                continue
+                
+            text_a = line['question']
+            text_b = line['passage']
+            text_c = line['title']
+            label = line['answer']
+            examples.append(InputExample(text_a=text_a, text_b=text_b, text_c=text_c, label=label))
+        return examples
 
 glue_tasks_num_labels = {
     "cola": 2,
@@ -526,6 +564,7 @@ glue_tasks_num_labels = {
     "qnli": 2,
     "rte": 2,
     "wnli": 2,
+    "BoolQ": 2  
 }
 
 glue_processors = {
@@ -539,6 +578,7 @@ glue_processors = {
     "qnli": QnliProcessor,
     "rte": RteProcessor,
     "wnli": WnliProcessor,
+    "BoolQ": BoolQProcessor,
 }
 
 glue_output_modes = {
@@ -552,4 +592,5 @@ glue_output_modes = {
     "qnli": "classification",
     "rte": "classification",
     "wnli": "classification",
+    "BoolQ": "classification",
 }
