@@ -522,6 +522,7 @@ class BoolQProcessor(DataProcessor):
     def get_example_from_tensor_dict(self, tensor_dict):
         """See base class."""
         return InputExample(
+            tensor_dict["idx"].numpy(),
             tensor_dict["question"].numpy().decode("utf-8"),
             tensor_dict["passage"].numpy().decode("utf-8"),
             tensor_dict["title"].numpy().decode("utf-8"),
@@ -546,12 +547,12 @@ class BoolQProcessor(DataProcessor):
         for (i, line) in enumerate(lines):
             if i == 0:
                 continue
-                
+            guid = "%s-%s" % (set_type, line[0])    
             text_a = line['question']
             text_b = line['passage']
             text_c = line['title']
             label = line['answer']
-            examples.append(InputExample(text_a=text_a, text_b=text_b, text_c=text_c, label=label))
+            examples.append(InputExample(guid=guid, text_a=text_a, text_b=text_b, text_c=text_c, label=label))
         return examples
 
 glue_tasks_num_labels = {
