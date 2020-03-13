@@ -526,25 +526,24 @@ class BoolQProcessor(DataProcessor):
             tensor_dict["idx"].numpy(),
             tensor_dict["question"].numpy().decode("utf-8"),
             tensor_dict["passage"].numpy().decode("utf-8"),
-            tensor_dict["title"].numpy().decode("utf-8"),
-            tensor_dict["answer"].numpy().decode("utf-8"),
+            str(tensor_dict["label"].numpy()),
         )
 
     def get_train_examples(self, data_dir):
         """See base class."""
         with open(os.path.join(data_dir, "train.jsonl"), "r",encoding="utf-8-sig") as f:
-            json_lines = [json.loads(line) for line in f.readlines()]
-        return self._create_examples(json_lines, "train")
+            lines = [json.loads(line) for line in f.readlines()]
+        return self._create_examples(lines, "train")
 
     def get_dev_examples(self, data_dir):
         """See base class."""
-        with open(os.path.join(data_dir, "dev.jsonl"), "r",encoding="utf-8-sig") as f:
-            json_lines = [json.loads(line) for line in f.readlines()]
-        return self._create_examples(json_lines, "dev")
+        with open(os.path.join(data_dir, "val.jsonl"), "r",encoding="utf-8-sig") as f:
+            lines = [json.loads(line) for line in f.readlines()]
+        return self._create_examples(lines, "dev")
 
     def get_labels(self):
         """See base class."""
-        return [True, False]
+        return ["True", "False"]
 
     def _create_examples(self, lines, set_type):
         """Creates examples for the training and dev sets."""
@@ -555,8 +554,7 @@ class BoolQProcessor(DataProcessor):
             guid = "%s-%s" % (set_type, i)    
             text_a = line['question']
             text_b = line['passage']
-            #text_c = line['title']
-            label = line['answer']
+            label = str(line['label'])
             examples.append(InputExample(guid=guid, text_a=text_a, text_b=text_b, label=label))
         return examples
 
