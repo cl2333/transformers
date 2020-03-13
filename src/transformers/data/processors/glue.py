@@ -532,15 +532,19 @@ class BoolQProcessor(DataProcessor):
 
     def get_train_examples(self, data_dir):
         """See base class."""
-        return self._create_examples(json.load(os.path.join(data_dir, "train.jsonl")), "train")
+        with open(os.path.join(data_dir, "train.jsonl"), "r",encoding="utf-8-sig") as f:
+            json_lines = [json.loads(line) for line in f.readlines()]
+        return self._create_examples(json_lines, "train")
 
     def get_dev_examples(self, data_dir):
         """See base class."""
-        return self._create_examples(json.load(os.path.join(data_dir, "dev.jsonl")), "dev")
+        with open(os.path.join(data_dir, "dev.jsonl"), "r",encoding="utf-8-sig") as f:
+            json_lines = [json.loads(line) for line in f.readlines()]
+        return self._create_examples(json_lines, "dev")
 
     def get_labels(self):
         """See base class."""
-        return ["true", "false"]
+        return [True, False]
 
     def _create_examples(self, lines, set_type):
         """Creates examples for the training and dev sets."""
